@@ -1,12 +1,19 @@
-*.fits
-*.par
-*/data/*
-*/weekly/*
+*.fits*
+*.par*
+*data*
+*weekly*
+
 *.DS_Store
-*.sh
-*.py
-*.py.*
-*.reg
+
+*.sh*
+*.py*
+*.reg*
+*.xml*
+
+*.txt*
+*.root*
+*.eps*
+
 backup
 
 # Byte-compiled / optimized / DLL files
