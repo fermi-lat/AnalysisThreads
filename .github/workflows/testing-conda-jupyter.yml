@@ -61,9 +61,9 @@ jobs:
         # The --nbmake flag tells pytest to look for notebooks.
         # You can specify a directory like `notebooks/` or a pattern.
         run: |
-          echo "Run tests testing-env"
+          echo "Run tests testing-jupyter"
           echo "TESTING BRANCH  ${{ github.ref_name }}"
-          conda install --name testing-env  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
+          conda install --name testing-jupyter  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
           # mkdir -p test_results
           # cd test_results/
           pytest --junitxml=test_results/jupyter_results.xml --nbmake SourceAnalysis/**/*.ipynb
