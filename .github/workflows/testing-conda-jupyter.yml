@@ -1,0 +1,86 @@
+name: Jupyter testing
+run-name: "Testing ${{ inputs.matrix_os }}"
+on:
+  workflow_call:
+    inputs:
+      matrix_os:
+        required: true
+        type: string
+        description: "matrix.os to be ran"
+      fermitools_pkg_ver:
+        required: true
+        type: string
+        description: "Fermitools package version"
+
+# Check out the AnalysisThreads repo: https://github.com/fermi-lat/AnalysisThreads
+# ${{github.ref_name}} was used to save updating the branch names in multiple files during development. 
+# New python dependency environment file was creating for testing jupyter testing : environments/fermitools-jupyter-nb.yml 
+
+jobs:
+  test:
+    runs-on: ${{ inputs.matrix_os }}
+    name: "Notebook Testing- ${{ inputs.matrix_os }} " 
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout AnalysisThreads repo 
+        uses: actions/checkout@v4
+        with:
+          ref: ${{github.ref_name}} #reset_checkout_fixes checkout_fixes master
+
+      - name: Conda environment creation and activation
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          conda-remove-defaults: true
+          python-version: 3.11.*
+          activate-environment: testing-jupyter 
+          environment-file: environments/fermitools-jupyter-nb.yml
+          auto-update-conda: false
+          auto-activate-base: false
+          show-channel-urls: true
+
+  # Currently, every conda  build package has to be uploaded to Anaconda, so the package name can be passed onto this workflow.
+  # It's a bug on the build actions team to fix. The alternative is to upload it as an artifact to Github server, and pass that reference around instead.
+  # So this code is being kept around , just in case we want to pivot: 
+
+      # - name: Download Conda package artifact
+      #  uses: actions/download-artifact@v4
+      #  with:
+      #    name: "${{ matrix.os }}-fermitools-package"
+      #    path: downloaded-package # Directory where the artifact will be downloaded
+
+  # Currently,  we only run : ST-unit-test
+  # But the plan is to include Tom's Likelihood tests, Threads testing that Don does manually, and Nestor is creating jupyter notebooks that can be ran as tests too.
+  # BUG: This doesn't handle Tags RC and MAIN, it will only pull from tag dev. 
+
+      - name: Run notebooks as tests with nbmake
+        id: run_jupyter_notebooks
+        continue-on-error: ${{ fromJSON(vars.CONTINUE_ON_ERROR || 'false') }}  # Default is to fail at first error
+        # Execute nbmake with pytest.
+        # The --nbmake flag tells pytest to look for notebooks.
+        # You can specify a directory like `notebooks/` or a pattern.
+        run: |
+          echo "Run tests testing-env"
+          echo "TESTING BRANCH  ${{ github.ref_name }}"
+          conda install --name testing-env  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
+          # mkdir -p test_results
+          # cd test_results/
+          pytest --junitxml=test_results/jupyter_results.xml --nbmake SourceAnalysis/**/*.ipynb
+
+      # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
+      - name: Publish Test Results Linux
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
+        if: runner.os == 'Linux'
+        with:
+          check_name: "Test Results ${{ inputs.matrix_os }}"
+          files: |
+             ${{ github.workspace }}/test_results/*.xml
+    
+      - name: Publish Test Results OSX
+        uses: EnricoMi/publish-unit-test-result-action/macos@v2
+        if: runner.os == 'macOS'
+        with:
+          check_name: "Test Results ${{ inputs.matrix_os }}"
+          files: |
+             ${{ github.workspace }}/test_results/*.xml
