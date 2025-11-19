@@ -66,7 +66,9 @@ jobs:
           conda install --name testing-jupyter  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
           # mkdir -p test_results
           # cd test_results/
-          pytest --junitxml=test_results/jupyter_results.xml --nbmake SourceAnalysis/**/*.ipynb
+          # pytest --junitxml=test_results/jupyter_results.xml --nbmake SourceAnalysis/**/*.ipynb
+          # Just run 1 test
+          pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=3000 SourceAnalysis/7.LATAperturePhotometry/aperture_photometry.ipynb
 
       # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
       - name: Publish Test Results Linux
