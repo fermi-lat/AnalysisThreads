@@ -4,9 +4,11 @@ channels:
   - fermi
 dependencies:
   - python=3.11
+  - ipykernel
   - pytest
   - pytest-xdist
   - astropy
   - junit-xml
   - nbmake 
+  - nb_conda_kernels
   - jupyterlab
