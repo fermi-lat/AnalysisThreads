@@ -67,8 +67,8 @@ jobs:
           # mkdir -p test_results
           # cd test_results/
           # pytest --junitxml=test_results/jupyter_results.xml --nbmake SourceAnalysis/**/*.ipynb
-          # Just run 1 test
-          pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=3000 SourceAnalysis/7.LATAperturePhotometry/aperture_photometry.ipynb
+          # These pass individually : (4,7,10), but fail when ran in parallel with "-n=auto"
+          pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=5000 SourceAnalysis/4.SummedPythonLikelihood/summed_tutorial.ipynb  SourceAnalysis/7.LATAperturePhotometry/aperture_photometry.ipynb  SourceAnalysis/10.EnergyDispersion/binnededisp_tutorial.ipynb 
 
       # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
       - name: Publish Test Results Linux
