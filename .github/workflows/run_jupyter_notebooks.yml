@@ -24,4 +24,4 @@ jobs:
     secrets: inherit
     with:
       matrix_os: ${{ matrix.os }}
-      fermitools_pkg_ver: "2.4.150"
+      fermitools_pkg_ver: "2.4.154"
