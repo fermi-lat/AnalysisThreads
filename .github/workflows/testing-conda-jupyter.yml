@@ -63,15 +63,22 @@ jobs:
         run: |
           echo "Run tests testing-jupyter"
           echo "TESTING BRANCH  ${{ github.ref_name }}"
-          conda install --name testing-jupyter  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
+
+          # conda install --name testing-jupyter  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
+          # Use the LATEST version, not a specific version.
+          conda install --name testing-jupyter  "fermi/label/dev::fermitools" python=3.11
+
           # mkdir -p test_results
           # cd test_results/
           # pytest --junitxml=test_results/jupyter_results.xml --nbmake SourceAnalysis/**/*.ipynb
           # LATSourceModel needed by 5.PythonUpperLimits/upper_limits.ipynb
           pip install LATSourceModel
-          # These pass individually : (4,7,10), but fail when ran in parallel with "-n=auto"
-          pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=5000 -v --full-trace SourceAnalysis/6.ExtendedSourceAnalysis/extended.ipynb SourceAnalysis/2.UnbinnedLikelihood/likelihood_tutorial.ipynb SourceAnalysis/1.BinnedLikelihood/binned_likelihood_tutorial.ipynb
+          # These pass individually : (4,6, 7,10), but fail when ran in parallel with "-n=auto"
+          # pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=5000 -v --full-trace SourceAnalysis/4.SummedPythonLikelihood/summed_tutorial.ipynb SourceAnalysis/6.ExtendedSourceAnalysis/extended.ipynb::extended.ipynb SourceAnalysis/7.LATAperturePhotometry/aperture_photometry.ipynb  SourceAnalysis/10.EnergyDispersion/binnededisp_tutorial.ipynb
+          # SourceAnalysis/6.ExtendedSourceAnalysis/extended.ipynb SourceAnalysis/2.UnbinnedLikelihood/likelihood_tutorial.ipynb SourceAnalysis/1.BinnedLikelihood/binned_likelihood_tutorial.ipynb
           # Passes 150: SourceAnalysis/4.SummedPythonLikelihood/summed_tutorial.ipynb  SourceAnalysis/7.LATAperturePhotometry/aperture_photometry.ipynb  SourceAnalysis/10.EnergyDispersion/binnededisp_tutorial.ipynb 
+          # Passes 154: SourceAnalysis/6.ExtendedSourceAnalysis/extended.ipynb::extended.ipynb
+          pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=5000 -v --full-trace  SourceAnalysis/2.UnbinnedLikelihood/likelihood_tutorial.ipynb SourceAnalysis/1.BinnedLikelihood/binned_likelihood_tutorial.ipynb
 
       # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
       - name: Publish Test Results Linux
