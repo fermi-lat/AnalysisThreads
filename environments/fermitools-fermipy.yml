@@ -1,0 +1,8 @@
+ame: fermitools-fermipy-testing
+channels:
+  - conda-forge
+  - fermi
+dependencies:
+  - astropy
+  - junit-xml
+  - python=3.11
