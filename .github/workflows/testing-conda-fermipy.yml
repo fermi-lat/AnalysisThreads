@@ -1,5 +1,5 @@
 name: Fermipy testing
-run-name: "Testing Fermipy on ${{ inputs.matrix_os }}"
+run-name: "Testing of Fermipy on ${{ inputs.matrix_os }}"
 on:
   workflow_call:
     inputs:
@@ -12,29 +12,20 @@ on:
         type: string
         description: "Fermitools package version"
 
-# Check out the AnalysisThreads repo: https://github.com/fermi-lat/AnalysisThreads
-# ${{github.ref_name}} was used to save updating the branch names in multiple files during development. 
-# New python dependency environment file was creating for testing jupyter testing : environments/fermitools-jupyter-nb.yml 
-
 jobs:
   test:
     runs-on: ${{ inputs.matrix_os }}
-    name: "Notebook Testing- ${{ inputs.matrix_os }} " 
+    name: "Fermipy Testing on ${{ inputs.matrix_os }} " 
     defaults:
       run:
         shell: bash -l {0}
     steps:
-      - name: Checkout AnalysisThreads repo 
-        uses: actions/checkout@v4
-        with:
-          ref: ${{github.ref_name}} #reset_checkout_fixes checkout_fixes master
-
       - name: Conda environment creation and activation
         uses: conda-incubator/setup-miniconda@v3
         with:
           conda-remove-defaults: true
-          python-version: 3.11.*
-          activate-environment: testing-fermipy 
+          python-version: 3.11
+          activate-environment: test_fermipy 
           environment-file: environments/fermitools-fermipy.yml
           auto-update-conda: false
           auto-activate-base: false
@@ -50,27 +41,22 @@ jobs:
       #    name: "${{ matrix.os }}-fermitools-package"
       #    path: downloaded-package # Directory where the artifact will be downloaded
 
-  # Currently,  we only run : ST-unit-test
-  # But the plan is to include Tom's Likelihood tests, Threads testing that Don does manually, and Nestor is creating jupyter notebooks that can be ran as tests too.
   # BUG: This doesn't handle Tags RC and MAIN, it will only pull from tag dev. 
 
       - name: Test fermipy with latest Fermitools conda pkg.
         id: test_fermipy
         continue-on-error: ${{ fromJSON(vars.CONTINUE_ON_ERROR || 'false') }}  # Default is to fail at first error
         run: |
-          echo "Run tests fermipy"
-          echo "TESTING BRANCH  ${{ github.ref_name }}"
-          # Install Ftools (includes fv")
-          ## conda install --name testing-fermipy  heasoft -c https://heasarc.gsfc.nasa.gov/FTP/software/conda/
+          echo "Run fermipy tests on branch ${{ github.ref_name }}"
 
           # Use the LATEST version, not a specific version.
-          conda install --name testing-fermipy  "fermi/label/dev::fermitools" python=3.11
+          # "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}"
+          conda install --name test_fermipy  "fermi/label/dev::fermitools" python=3.11
 
-          conda install --name testing-fermipy -c conda-forge fermipy pytest
-          ##echo "HEADAS=$CONDA_PREFIX/heasoft" >> "$GITHUB_ENV"
-          ## source "${{env.HEADAS }}/headas.sh"
+          # Install the latest Fermipy and pytest
+          conda install --name test_fermipy -c conda-forge fermipy pytest
 
-          # pytest  --junitxml=test_results/jupyter_results.xml --nbmake --nbmake-timeout=5000 -v --full-trace  SourceAnalysis/2.UnbinnedLikelihood/likelihood_tutorial.ipynb SourceAnalysis/1.BinnedLikelihood/binned_likelihood_tutorial.ipynb
+          # Run Fermipy's tests and save them so they can be reported on the dashboard.
           pytest --junitxml=test_results/fermipy_results.xml -vv --pyargs fermipy
 
       # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
