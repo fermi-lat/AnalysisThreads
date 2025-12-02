@@ -20,6 +20,11 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
+      - name: Checkout AnalysisThreads repo 
+        uses: actions/checkout@v4
+        with:
+          ref: ${{github.ref_name}} #reset_checkout_fixes checkout_fixes master
+
       - name: Conda environment creation and activation
         uses: conda-incubator/setup-miniconda@v3
         with:
