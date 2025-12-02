@@ -1,4 +1,4 @@
-ame: fermitools-fermipy-testing
+name: fermitools-fermipy-testing
 channels:
   - conda-forge
   - fermi
