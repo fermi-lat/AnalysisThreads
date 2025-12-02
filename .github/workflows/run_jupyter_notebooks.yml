@@ -16,11 +16,22 @@ jobs:
     uses: ./.github/workflows/generate-matrix.yml # Call the matrix-generating workflow
 
   # This job builds the 4 packages, uploads them to Anaconda and runs test(s) against them.
+#  run-junpyter-notebooks:
+#    needs: generate-matrix-tuple # Ensure matrix generation completes first
+#    strategy:
+#      matrix: ${{ fromJson(needs.generate-matrix-tuple.outputs.matrix) }}
+#    uses: ./.github/workflows/testing-conda-jupyter.yml # Call the matrix-generating workflow
+#    secrets: inherit
+#    with:
+#      matrix_os: ${{ matrix.os }}
+#      fermitools_pkg_ver: "2.4.154"
+
+  # This job builds the 4 packages, uploads them to Anaconda and runs test(s) against them.
   run-junpyter-notebooks:
     needs: generate-matrix-tuple # Ensure matrix generation completes first
     strategy:
       matrix: ${{ fromJson(needs.generate-matrix-tuple.outputs.matrix) }}
-    uses: ./.github/workflows/testing-conda-jupyter.yml # Call the matrix-generating workflow
+    uses: ./.github/workflows/testing-conda-fermipy.yml
     secrets: inherit
     with:
       matrix_os: ${{ matrix.os }}
