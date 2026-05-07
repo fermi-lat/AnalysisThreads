@@ -54,7 +54,7 @@ jobs:
           conda-remove-defaults: true
           python-version: 3.11
           activate-environment: test_fermi_env
-          environment-file:  FB_TESTING/fermi-summer-school/environments/${{inputs.env_file}}
+          environment-file:  FB_TESTING/AnalysisThreads/environments/${{inputs.env_file}}
           auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
