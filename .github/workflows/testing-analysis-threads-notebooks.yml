@@ -62,11 +62,12 @@ jobs:
       - name: Test SourceAnalysis  Notebooks pkg.
         id: test_source_analysis_nb_fermi
         # continue-on-error: ${{ fromJSON(vars.CONTINUE_ON_ERROR || 'false') }}  # Default is to fail at first error
+        shell: bash
         run: |
+          set +e
           conda list
           echo "Run fermi env source_analysis_nb tests on branch ${{ github.ref_name }}"
           cd ${{ github.workspace }}/FB_TESTING/AnalysisThreads/SourceAnalysis
-          pytest --nbmake -n auto --nbmake-timeout=3000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/esa6_result.xml -vv 6.ExtendedSourceAnalysis/*.ipynb
           pytest --nbmake -n auto --nbmake-timeout=10000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/ulh2_result.xml -vv 2.UnbinnedLikelihood/*.ipynb
           pytest --nbmake -n auto --nbmake-timeout=3000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/pul5_result.xml -vv 5.PythonUpperLimits/*.ipynb
           pytest --nbmake -n auto --nbmake-timeout=3000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/pg8_results.xml -vv  8.PulsarGating/*.ipynb
@@ -75,6 +76,7 @@ jobs:
           pytest --nbmake -n auto --nbmake-timeout=3000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/splh4_result.xml -vv 4.SummedPythonLikelihood/*.ipynb
           pytest --nbmake -n auto --nbmake-timeout=3000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/lap7_result.xml -vv 7.LATAperturePhotometry/*.ipynb
           pytest --nbmake -n auto --nbmake-timeout=5000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/ed10_result.xml -vv 10.EnergyDispersion/*.ipynb
+          pytest --nbmake -n auto --nbmake-timeout=3000 --junitxml=${{ github.workspace }}/FB_TESTING/test_results/esa6_result.xml -vv 6.ExtendedSourceAnalysis/*.ipynb
         continue-on-error: true  # Job keeps going even if tests fail
       
       # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
