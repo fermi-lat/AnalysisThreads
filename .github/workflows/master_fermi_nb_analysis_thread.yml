@@ -1,0 +1,100 @@
+name: AnalysisThreads notebooks testing.
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+  schedule:
+    # Run only Sat morning starting at 2am EST
+    - cron: '0 6 * * 6'
+
+jobs:
+  conda-ci:
+    # name: Test ${{ matrix.pixi-platform }}
+    runs-on: ${{ matrix.runner }}
+    name: "AnalysisThreads NB Testing- ${{ matrix.pixi-platform }} "
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pixi-platform: linux-64
+            runner: ubuntu-24.04
+          - pixi-platform: linux-aarch64
+            runner: ubuntu-24.04-arm
+          - pixi-platform: osx-64
+            runner: macos-15-intel
+          - pixi-platform: osx-arm64
+            runner: macos-15
+
+    steps:
+    # 1. Check out the source code
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Checkout repo
+      uses: actions/checkout@v6
+      with:
+         ref: ${{github.ref_name}} #reset_checkout_fixes checkout_fixes master
+
+    - name: Conda environment creation and activation
+      uses: Wandalen/wretry.action@master
+      with:
+        action: conda-incubator/setup-miniconda@v4
+        with: |
+          conda-remove-defaults: true
+          python-version: 3.12.*
+          activate-environment: testing-jupyter
+          environment-file: environments/fermitools-testing-jupyter-nbs.yml
+          auto-update-conda: false
+          auto-activate: false
+          show-channel-urls: true
+        attempt_limit: 3
+        attempt_delay: 2000
+
+    - name: Run notebooks as tests with nbmake
+      id: run_jupyter_notebooks
+      continue-on-error: ${{ fromJSON(vars.CONTINUE_ON_ERROR || 'false') }}  # Default is to fail at first error
+      # Execute nbmake with pytest.
+      # The --nbmake flag tells pytest to look for notebooks.
+      # You can specify a directory like `notebooks/` or a pattern.
+      run: |
+        echo "Run tests testing-jupyter"
+        echo "TESTING BRANCH  ${{ github.ref_name }}"
+        pip install LATSourceModel
+        mkdir -p "${{ github.workspace }}/shared-testing/"
+        cd "${{ github.workspace }}/shared-testing/"
+        git clone "https://github.com/fermi-lat/AnalysisThreads.git"
+        mkdir -p test_results
+        cd AnalysisThreads
+        # cd AnalysisThreads/SourceAnalysis/
+        # pytest --junitxml=../../test_results/jupyter_results.xml --nbmake */*.ipynb
+        # LATSourceModel needed by 5.PythonUpperLimits/upper_limits.ipynb
+        pip install LATSourceModel
+        # These pass individually : (4,6, 7,10), but fail when ran in parallel with "-n=auto"
+        # --ignore=path/to/ignored_dir -n auto -vv
+        # pytest --nbmake --nbmake-timeout=10000  --junitxml=../../test_results/most_jupyter_results.xml  **/*.ipynb
+        pytest --junitxml=../test_results/most_jupyter_results.xml --nbmake --nbmake-timeout=10000 -n auto -vv  SourceAnalysis/**/*.ipynb
+        # pytest  --junitxml=../test_results/jupyter_results.xml --nbmake --nbmake-timeout=5000 -v --full-trace SourceAnalysis/4.SummedPythonLikelihood/summed_tutorial.ipynb SourceAnalysis/6.ExtendedSourceAnalysis/extended.ipynb::extended.ipynb SourceAnalysis/7.LATAperturePhotometry/aperture_photometry.ipynb  SourceAnalysis/10.EnergyDispersion/binnededisp_tutorial.ipynb
+
+    # The layout for this reporting action works. Not sure if there is something better, but it does a good job for us.
+    - name: Publish Test Results Linux
+      uses: EnricoMi/publish-unit-test-result-action/linux@v2
+      if: runner.os == 'Linux'
+      with:
+        check_name: "Test Results: Conda Baseline ${{ matrix.runner }}"
+        files: |
+           ${{ github.workspace }}/shared-testing/test_results/*.xml
+
+    - name: Publish Test Results OSX
+      uses: EnricoMi/publish-unit-test-result-action/macos@v2
+      if: runner.os == 'macOS'
+      with:
+        check_name: "Test Results: Conda Baseline ${{ matrix.runner }}"
+        files: |
+           ${{ github.workspace }}/shared-testing/test_results/*.xml
