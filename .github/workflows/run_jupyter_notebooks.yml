@@ -1,4 +1,4 @@
-name: Matrix Test and Notify
+name: Matrix FermiPy Testing and Notify
 
 on:
   push:
@@ -35,4 +35,4 @@ jobs:
     secrets: inherit
     with:
       matrix_os: ${{ matrix.os }}
-      fermitools_pkg_ver: "2.4.154"
+      fermitools_pkg_ver: "2.5.48"
