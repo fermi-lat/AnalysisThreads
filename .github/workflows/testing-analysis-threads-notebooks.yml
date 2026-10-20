@@ -56,7 +56,7 @@ jobs:
           activate-environment: test_fermi_env
           environment-file:  FB_TESTING/AnalysisThreads/environments/${{inputs.env_file}}
           auto-update-conda: false
-          auto-activate-base: false
+          auto-activate: false
           show-channel-urls: true
 
       - name: Test SourceAnalysis  Notebooks pkg.
