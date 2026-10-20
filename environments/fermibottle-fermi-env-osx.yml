@@ -17,8 +17,9 @@ dependencies:
   - jupyter
   - jupyter_server
   - libpng
-  - "matplotlib==3.9.*"
-  - "numpy==1.26.*"
+  - matplotlib
+  # - "matplotlib==3.9.*"
+  - numpy>2.0 # Update numpy from 1.26 to 2.x
   - conda-forge::nbmake
   - scipy
   - pmw
