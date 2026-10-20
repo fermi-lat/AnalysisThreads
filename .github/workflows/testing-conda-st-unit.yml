@@ -34,7 +34,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           conda-remove-defaults: true
-          python-version: 3.11.*
+          python-version: 3.12.*
           activate-environment: testing-env 
           environment-file: environments/fermitools-testing.yml
           auto-update-conda: false
@@ -62,7 +62,7 @@ jobs:
         run: |
            echo "Run tests testing-env"
            echo "TESTING BRANCH  ${{ github.ref_name }}"
-           conda install --name testing-env  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
+           conda install --name testing-env  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.12
            mkdir -p test_results
            cd test_results/
            ../recipe/tests/ST-unit-test -w -d -v

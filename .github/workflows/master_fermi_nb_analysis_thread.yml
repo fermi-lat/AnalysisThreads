@@ -24,11 +24,11 @@ jobs:
       matrix:
         include:
           - pixi-platform: linux-64
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
           - pixi-platform: linux-aarch64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
           - pixi-platform: osx-arm64
-            runner: macos-15
+            runner: macos-26
           # - pixi-platform: osx-64
           #  runner: macos-15-intel
 

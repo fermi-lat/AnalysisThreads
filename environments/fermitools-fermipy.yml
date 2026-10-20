@@ -3,6 +3,6 @@ channels:
   - conda-forge
   - fermi
 dependencies:
-  - python=3.11
+  - python=3.12
   - pytest
   - junit-xml

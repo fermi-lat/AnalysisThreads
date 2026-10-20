@@ -33,7 +33,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           conda-remove-defaults: true
-          python-version: 3.11.*
+          python-version: 3.12.*
           activate-environment: testing-jupyter 
           environment-file: environments/fermitools-jupyter-nb.yml
           auto-update-conda: false
@@ -64,9 +64,9 @@ jobs:
           echo "Run tests testing-jupyter"
           echo "TESTING BRANCH  ${{ github.ref_name }}"
 
-          # conda install --name testing-jupyter  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.11
+          # conda install --name testing-jupyter  "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}" python=3.12
           # Use the LATEST version, not a specific version.
-          conda install --name testing-jupyter  "fermi/label/dev::fermitools" python=3.11
+          conda install --name testing-jupyter  "fermi/label/dev::fermitools" python=3.12
 
           # mkdir -p test_results
           # cd test_results/

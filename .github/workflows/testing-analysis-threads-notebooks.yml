@@ -52,7 +52,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v4
         with:
           conda-remove-defaults: true
-          python-version: 3.11
+          python-version: 3.12
           activate-environment: test_fermi_env
           environment-file:  FB_TESTING/AnalysisThreads/environments/${{inputs.env_file}}
           auto-update-conda: false

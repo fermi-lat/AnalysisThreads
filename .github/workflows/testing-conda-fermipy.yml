@@ -29,7 +29,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           conda-remove-defaults: true
-          python-version: 3.11
+          python-version: 3.12
           activate-environment: test_fermipy 
           environment-file: environments/fermitools-fermipy.yml
           auto-update-conda: false
@@ -56,7 +56,7 @@ jobs:
 
           # Use the LATEST version, not a specific version.
           # "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}"
-          conda install --name test_fermipy  "fermi/label/dev::fermitools" python=3.11
+          conda install --name test_fermipy  "fermi/label/dev::fermitools" python=3.12
 
           # Install the latest Fermipy and pytest
           conda install --name test_fermipy -c conda-forge fermipy pytest

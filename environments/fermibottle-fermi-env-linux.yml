@@ -4,7 +4,7 @@ channels:
   - fermi
 dependencies:
   - "python-tzdata==2025.3"
-  - python=3.11
+  - python=3.12
   - pip # Required to use the pip section below
   - pytest
   - junit-xml
