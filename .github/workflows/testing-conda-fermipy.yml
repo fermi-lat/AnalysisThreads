@@ -56,13 +56,18 @@ jobs:
 
           # Use the LATEST version, not a specific version.
           # "fermi/label/dev::fermitools=${{inputs.fermitools_pkg_ver}}"
-          conda install --name test_fermipy  "fermi/label/dev::fermitools" python=3.12
+          conda install --name test_fermipy  "fermi/label/dev::fermitools" python=3.12 pytest regions="<0.12"
 
           # Install the latest Fermipy and pytest
-          conda install --name test_fermipy -c conda-forge fermipy pytest
+          # conda install --name test_fermipy -c conda-forge fermipy pytest
+          # conda install --name test_fermipy -c conda-forge pytest
+
+          # conda create --name fermipy_0720_RC -c conda-forge -c fermi/label/dev    python==3.12 healpy gammapy fermitools pytest pytest-cov regions="<0.12"
+          pip install fermipy
+          # git+https://github.com/fermiPy/fermipy.git  
 
           # This gives us the latest Fermipy
-          conda update --name test_fermipy -c conda-forge fermipy
+          # conda update --name test_fermipy -c conda-forge fermipy
 
           # Run Fermipy's tests and save them so they can be reported on the dashboard.
           pytest --junitxml=test_results/fermipy_results.xml -vv --pyargs fermipy
