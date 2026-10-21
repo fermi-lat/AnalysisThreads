@@ -8,5 +8,5 @@ dependencies:
   - gammapy
   - pytest
   - pytest-cov 
-  - regions="<0.12"
+  - "regions=<0.12"
   - junit-xml
