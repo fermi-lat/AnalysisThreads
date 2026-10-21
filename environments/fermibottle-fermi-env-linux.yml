@@ -8,10 +8,11 @@ dependencies:
   - pip # Required to use the pip section below
   - pytest
   - junit-xml
-  - astropy
+  - "astropy<8.0.0"
   - ipykernel 
   - nb_conda_kernels
-  - "gammapy==2.0.*"
+  # - "gammapy==2.0.*"
+  - gammapy
   - pgplot
   - healpy
   - jupyter
@@ -22,11 +23,12 @@ dependencies:
   # - "numpy==1.26.*"
   - numpy>2.0 # Update numpy from 1.26 to 2.x 
   - conda-forge::nbmake
-  - scipy
+  - "scipy=<1.18"
   - pmw
   - seaborn
   - "fermitools==2.5.*"
   - "fermitools-data"
+  - "regions=<0.12"
   - pip:
       - LATSourceModel
       - astropy-iers-data

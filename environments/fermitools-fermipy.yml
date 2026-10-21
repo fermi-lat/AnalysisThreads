@@ -1,8 +1,12 @@
 name: fermitools-fermipy-testing
 channels:
   - conda-forge
-  - fermi
+  - fermi/label/dev
 dependencies:
   - python=3.12
+  - healpy
+  - gammapy
   - pytest
+  - pytest-cov 
+  - regions="<0.12"
   - junit-xml

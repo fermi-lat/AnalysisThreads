@@ -1,7 +1,7 @@
 name: fermitools-testing
 channels:
   - conda-forge
-  - fermi
+  - fermi/label/dev
 dependencies:
   - python=3.12
   - ipykernel
