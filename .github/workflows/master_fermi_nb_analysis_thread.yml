@@ -37,6 +37,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v6
 
+    - name: Install LLVM libs for Mac
+      if: runner.os == 'macOS'
+      run: brew install llvm libomp
+
     - name: Checkout repo
       uses: actions/checkout@v6
       with:

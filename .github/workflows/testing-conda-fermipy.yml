@@ -25,8 +25,12 @@ jobs:
         with:
           ref: ${{github.ref_name}} #reset_checkout_fixes checkout_fixes master
 
+      - name: Install LLVM libs for Mac
+        if: runner.os == 'macOS'
+        run: brew install llvm libomp
+
       - name: Conda environment creation and activation
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
           conda-remove-defaults: true
           python-version: 3.12
